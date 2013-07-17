@@ -9,6 +9,7 @@ module Spree
   class SkuError < StandardError; end;
 
   class ProductImport < ActiveRecord::Base
+    attr_accessible :data_file
     has_attached_file :data_file, :path => ":rails_root/lib/etc/product_data/data-files/:basename.:extension"
     validates_attachment_presence :data_file
 
@@ -327,7 +328,7 @@ module Spree
       file = filename =~ /\Ahttp[s]*:\/\// ? fetch_remote_image(filename) : fetch_local_image(filename)
       #An image has an attachment (the image file) and some object which 'views' it
       product_image = Spree::Image.new({:attachment => file,
-                                :viewable => product_or_variant,
+                                :viewable_id => product_or_variant.id,
                                 :position => product_or_variant.images.length
                                 })
 
